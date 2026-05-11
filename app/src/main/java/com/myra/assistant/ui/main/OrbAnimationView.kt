@@ -7,17 +7,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
-import kotlin.jvm.JvmOverloads
 import kotlin.math.cos
 import kotlin.math.sin
 
 enum class OrbState { IDLE, LISTENING, SPEAKING, THINKING }
 
-class OrbAnimationView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+class OrbAnimationView : View {
+
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     var state = OrbState.IDLE
         set(value) { field = value; updateColors(); safeInvalidate() }
