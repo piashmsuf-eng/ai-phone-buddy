@@ -4,6 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
-    <EditText android:id="@+id/dialogNameInput" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Name" android:textColor="#EEEEEE" android:hintTextColor="#555555" android:background="@drawable/bg_input_field" android:layout_marginBottom="12dp" />
-    <EditText android:id="@+id/dialogNumberInput" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Phone Number" android:inputType="phone" android:textColor="#EEEEEE" android:hintTextColor="#555555" android:background="@drawable/bg_input_field" />
+    <EditText android:id="@+id/dialogNameInput" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Name" android:textColor="#EEEEEE" android:textColorHint="#555555" android:background="@drawable/bg_input_field" android:layout_marginBottom="12dp" />
+    <EditText android:id="@+id/dialogNumberInput" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Phone Number" android:inputType="phone" android:textColor="#EEEEEE" android:textColorHint="#555555" android:background="@drawable/bg_input_field" />
 </LinearLayout>
