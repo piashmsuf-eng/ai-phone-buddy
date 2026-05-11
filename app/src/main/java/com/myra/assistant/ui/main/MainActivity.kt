@@ -62,8 +62,9 @@ class MainActivity : AppCompatActivity() {
 
             handleIncomingCallIntent(intent)
         } catch (e: Exception) {
-            Log.e("MYRA", "onCreate crash", e)
-            Toast.makeText(this, "Startup error: ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e("MYRA", "onCreate crash: ${e.javaClass.name}: ${e.message}", e)
+            e.printStackTrace()
+            Toast.makeText(this, "Crash: ${e.javaClass.simpleName}: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 

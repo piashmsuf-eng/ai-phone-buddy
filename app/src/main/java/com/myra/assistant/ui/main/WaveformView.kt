@@ -4,41 +4,40 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 
-class WaveformView : View {
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
-    ) : super(context, attrs, defStyleAttr)
+class WaveformView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     private val barCount = 20
     private val barHeights = FloatArray(barCount) { 5f }
     private val targetHeights = FloatArray(barCount) { 5f }
     private var amplitude = 0f
-    private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#FF1744") }
+    private var barPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#FF1744") }
     private var isAnimating = false
 
-    private val animator: ValueAnimator
+    private var animator: ValueAnimator? = null
 
     init {
-        var a: ValueAnimator? = null
         try {
-            a = ValueAnimator.ofFloat(0f, 1f).apply {
+            animator = ValueAnimator.ofFloat(0f, 1f).apply {
                 duration = 50; repeatCount = ValueAnimator.INFINITE; repeatMode = ValueAnimator.RESTART
                 addUpdateListener {
                     for (i in 0 until barCount) {
                         barHeights[i] += (targetHeights[i] - barHeights[i]) * 0.3f
                     }
-                    invalidate()
+                    try { invalidate() } catch (_: Exception) {}
                 }
             }
-        } catch (_: Exception) {}
-        animator = a ?: ValueAnimator.ofFloat(0f, 0f)
+        } catch (e: Exception) {
+            Log.e("MYRA_WAV", "init animator failed", e)
+        }
     }
 
     fun setAmplitude(rms: Float) {
@@ -49,18 +48,28 @@ class WaveformView : View {
         }
     }
 
-    fun startAnimation() { if (!isAnimating) { isAnimating = true; try { animator.start() } catch (_: Exception) {} } }
-    fun stopAnimation() { isAnimating = false; try { animator.cancel() } catch (_: Exception) {} }
+    fun startAnimation() { if (!isAnimating) { isAnimating = true; try { animator?.start() } catch (_: Exception) {} } }
+    fun stopAnimation() { isAnimating = false; try { animator?.cancel() } catch (_: Exception) {} }
 
     override fun onDraw(canvas: Canvas) {
+        try {
+            drawBars(canvas)
+        } catch (e: Exception) {
+            Log.e("MYRA_WAV", "onDraw crash", e)
+        }
+    }
+
+    private fun drawBars(canvas: Canvas) {
         super.onDraw(canvas)
-        val barWidth = width.toFloat() / barCount
+        val w = width.toFloat(); val h = height.toFloat()
+        if (w <= 0 || h <= 0) return
+        val barWidth = w / barCount
         for (i in 0 until barCount) {
-            val h = barHeights[i]
-            barPaint.alpha = (150 + h * 3).toInt().coerceIn(0, 255)
+            val barH = barHeights[i]
+            barPaint.alpha = (150 + barH * 3).toInt().coerceIn(0, 255)
             val left = i * barWidth + 2
             val right = left + barWidth - 4
-            canvas.drawRoundRect(left, height / 2f - h / 2f, right, height / 2f + h / 2f, 2f, 2f, barPaint)
+            canvas.drawRoundRect(left, h / 2f - barH / 2f, right, h / 2f + barH / 2f, 2f, 2f, barPaint)
         }
     }
 }

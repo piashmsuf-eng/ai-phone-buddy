@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kotlin.jvm.JvmOverloads
@@ -12,53 +13,65 @@ import kotlin.math.sin
 
 enum class OrbState { IDLE, LISTENING, SPEAKING, THINKING }
 
-class OrbAnimationView : View {
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
-    ) : super(context, attrs, defStyleAttr)
+class OrbAnimationView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+
     var state = OrbState.IDLE
-        set(value) { field = value; updateColors(); invalidate() }
+        set(value) { field = value; updateColors(); safeInvalidate() }
     var amplitude = 0f
 
-    private val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 3f }
-    private val corePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val particlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
-    private val wavePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2f }
+    private var ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 3f }
+    private var corePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var particlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+    private var wavePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2f }
     private var rotationAngle = 0f
     private var pulseScale = 1f
     private var waveOffset = 0f
     private var coreColor = 0xFFB71C1C.toInt()
     private var accentColor = 0xFFFF1744.toInt()
 
-    private val rotateAnimator: ValueAnimator
-    private val pulseAnimator: ValueAnimator
-    private val waveAnimator: ValueAnimator
+    private var rotateAnimator: ValueAnimator? = null
+    private var pulseAnimator: ValueAnimator? = null
+    private var waveAnimator: ValueAnimator? = null
 
     init {
-        var r: ValueAnimator? = null; var p: ValueAnimator? = null; var w: ValueAnimator? = null
-        try { r = ValueAnimator.ofFloat(0f, 360f).apply { duration = 3000; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator(); addUpdateListener { rotationAngle = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
-        try { p = ValueAnimator.ofFloat(1f, 1.15f).apply { duration = 1500; repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE; addUpdateListener { pulseScale = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
-        try { w = ValueAnimator.ofFloat(0f, 1f).apply { duration = 1200; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator(); addUpdateListener { waveOffset = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
-        rotateAnimator = r ?: ValueAnimator.ofFloat(0f, 0f)
-        pulseAnimator = p ?: ValueAnimator.ofFloat(1f, 1f)
-        waveAnimator = w ?: ValueAnimator.ofFloat(0f, 0f)
+        try {
+            rotateAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
+                duration = 3000; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
+                addUpdateListener { rotationAngle = it.animatedValue as Float; safeInvalidate() }
+            }
+            pulseAnimator = ValueAnimator.ofFloat(1f, 1.15f).apply {
+                duration = 1500; repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { pulseScale = it.animatedValue as Float; safeInvalidate() }
+            }
+            waveAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 1200; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
+                addUpdateListener { waveOffset = it.animatedValue as Float; safeInvalidate() }
+            }
+        } catch (e: Exception) {
+            Log.e("MYRA_ORB", "init animators failed", e)
+        }
+    }
+
+    private fun safeInvalidate() {
+        try { invalidate() } catch (_: Exception) {}
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        try { rotateAnimator.start() } catch (_: Exception) {}
-        try { pulseAnimator.start() } catch (_: Exception) {}
-        try { waveAnimator.start() } catch (_: Exception) {}
+        try { rotateAnimator?.start() } catch (_: Exception) {}
+        try { pulseAnimator?.start() } catch (_: Exception) {}
+        try { waveAnimator?.start() } catch (_: Exception) {}
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        try { rotateAnimator.cancel() } catch (_: Exception) {}
-        try { pulseAnimator.cancel() } catch (_: Exception) {}
-        try { waveAnimator.cancel() } catch (_: Exception) {}
+        try { rotateAnimator?.cancel() } catch (_: Exception) {}
+        try { pulseAnimator?.cancel() } catch (_: Exception) {}
+        try { waveAnimator?.cancel() } catch (_: Exception) {}
     }
 
     private fun updateColors() {
@@ -71,9 +84,19 @@ class OrbAnimationView : View {
     }
 
     override fun onDraw(canvas: Canvas) {
+        try {
+            drawOrb(canvas)
+        } catch (e: Exception) {
+            Log.e("MYRA_ORB", "onDraw crash", e)
+        }
+    }
+
+    private fun drawOrb(canvas: Canvas) {
         super.onDraw(canvas)
-        val cx = width / 2f; val cy = height / 2f
-        val radius = (minOf(width, height) / 2.8f) * pulseScale
+        val w = width.toFloat(); val h = height.toFloat()
+        if (w <= 0 || h <= 0) return
+        val cx = w / 2f; val cy = h / 2f
+        val radius = (minOf(w, h) / 2.8f) * pulseScale
 
         corePaint.shader = RadialGradient(cx - radius * 0.3f, cy - radius * 0.3f, radius * 1.6f,
             intArrayOf(Color.WHITE, accentColor, coreColor), floatArrayOf(0f, 0.4f, 1f), Shader.TileMode.CLAMP)
