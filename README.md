@@ -115,7 +115,7 @@ cd ai-phone-buddy
 ```
 
 ### Option 2: Download APK
-[⬇️ Download MYRA v1.0.3 APK](https://github.com/piashmsuf-eng/ai-phone-buddy/releases/download/v1.0.3/MYRA-v1.0.3.apk) (5 MB)
+[⬇️ Download MYRA v1.0.4 APK](https://github.com/piashmsuf-eng/ai-phone-buddy/releases/download/v1.0.4/MYRA-v1.0.4.apk) (5 MB)
 
 ### Requirements
 | Item | Detail |
