@@ -6,16 +6,19 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import kotlin.jvm.JvmOverloads
 import kotlin.math.cos
 import kotlin.math.sin
 
 enum class OrbState { IDLE, LISTENING, SPEAKING, THINKING }
 
-class OrbAnimationView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+class OrbAnimationView : View {
+    @JvmOverloads
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) : super(context, attrs, defStyleAttr)
     var state = OrbState.IDLE
         set(value) { field = value; updateColors(); invalidate() }
     var amplitude = 0f
@@ -30,31 +33,32 @@ class OrbAnimationView @JvmOverloads constructor(
     private var coreColor = 0xFFB71C1C.toInt()
     private var accentColor = 0xFFFF1744.toInt()
 
-    private val rotateAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
-        duration = 3000; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
-        addUpdateListener { rotationAngle = it.animatedValue as Float; invalidate() }
-    }
-    private val pulseAnimator = ValueAnimator.ofFloat(1f, 1.15f).apply {
-        duration = 1500; repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE
-        addUpdateListener { pulseScale = it.animatedValue as Float; invalidate() }
-    }
-    private val waveAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-        duration = 1200; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
-        addUpdateListener { waveOffset = it.animatedValue as Float; invalidate() }
+    private val rotateAnimator: ValueAnimator
+    private val pulseAnimator: ValueAnimator
+    private val waveAnimator: ValueAnimator
+
+    init {
+        var r: ValueAnimator? = null; var p: ValueAnimator? = null; var w: ValueAnimator? = null
+        try { r = ValueAnimator.ofFloat(0f, 360f).apply { duration = 3000; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator(); addUpdateListener { rotationAngle = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
+        try { p = ValueAnimator.ofFloat(1f, 1.15f).apply { duration = 1500; repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE; addUpdateListener { pulseScale = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
+        try { w = ValueAnimator.ofFloat(0f, 1f).apply { duration = 1200; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator(); addUpdateListener { waveOffset = it.animatedValue as Float; invalidate() } } } catch (_: Exception) {}
+        rotateAnimator = r ?: ValueAnimator.ofFloat(0f, 0f)
+        pulseAnimator = p ?: ValueAnimator.ofFloat(1f, 1f)
+        waveAnimator = w ?: ValueAnimator.ofFloat(0f, 0f)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        rotateAnimator.start()
-        pulseAnimator.start()
-        waveAnimator.start()
+        try { rotateAnimator.start() } catch (_: Exception) {}
+        try { pulseAnimator.start() } catch (_: Exception) {}
+        try { waveAnimator.start() } catch (_: Exception) {}
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        rotateAnimator.cancel()
-        pulseAnimator.cancel()
-        waveAnimator.cancel()
+        try { rotateAnimator.cancel() } catch (_: Exception) {}
+        try { pulseAnimator.cancel() } catch (_: Exception) {}
+        try { waveAnimator.cancel() } catch (_: Exception) {}
     }
 
     private fun updateColors() {

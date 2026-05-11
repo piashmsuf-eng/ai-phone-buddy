@@ -5,13 +5,17 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 
-class WaveformView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+class WaveformView : View {
+    @JvmOverloads
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) : super(context, attrs, defStyleAttr)
+
     private val barCount = 20
     private val barHeights = FloatArray(barCount) { 5f }
     private val targetHeights = FloatArray(barCount) { 5f }
@@ -19,26 +23,34 @@ class WaveformView @JvmOverloads constructor(
     private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#FF1744") }
     private var isAnimating = false
 
-    private val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-        duration = 50; repeatCount = ValueAnimator.INFINITE; repeatMode = ValueAnimator.RESTART
-        addUpdateListener {
-            for (i in 0 until barCount) {
-                barHeights[i] += (targetHeights[i] - barHeights[i]) * 0.3f
+    private val animator: ValueAnimator
+
+    init {
+        var a: ValueAnimator? = null
+        try {
+            a = ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 50; repeatCount = ValueAnimator.INFINITE; repeatMode = ValueAnimator.RESTART
+                addUpdateListener {
+                    for (i in 0 until barCount) {
+                        barHeights[i] += (targetHeights[i] - barHeights[i]) * 0.3f
+                    }
+                    invalidate()
+                }
             }
-            invalidate()
-        }
+        } catch (_: Exception) {}
+        animator = a ?: ValueAnimator.ofFloat(0f, 0f)
     }
 
     fun setAmplitude(rms: Float) {
         amplitude = rms.coerceIn(0f, 1f)
         for (i in 0 until barCount) {
-            val factor = 1f - kotlin.math.abs(i - barCount / 2f) / (barCount / 2f)
+            val factor = 1f - abs(i - barCount / 2f) / (barCount / 2f)
             targetHeights[i] = (5f + amplitude * factor * 30f).coerceAtLeast(3f)
         }
     }
 
-    fun startAnimation() { if (!isAnimating) { isAnimating = true; animator.start() } }
-    fun stopAnimation() { isAnimating = false; animator.cancel() }
+    fun startAnimation() { if (!isAnimating) { isAnimating = true; try { animator.start() } catch (_: Exception) {} } }
+    fun stopAnimation() { isAnimating = false; try { animator.cancel() } catch (_: Exception) {} }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
