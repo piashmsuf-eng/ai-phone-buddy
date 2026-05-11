@@ -14,7 +14,11 @@ object CrashLogger {
     private val dateFormat = SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US)
 
     fun init(context: Context) {
-        logFile = File(context.getExternalFilesDir(null), "myra_crash_log.txt")
+        try {
+            val dir = context.getExternalFilesDir(null) ?: context.cacheDir
+            logFile = File(dir, "myra_crash_log.txt")
+            if (!logFile!!.exists()) logFile!!.createNewFile()
+        } catch (_: Exception) {}
     }
 
     fun log(tag: String, message: String, throwable: Throwable? = null) {

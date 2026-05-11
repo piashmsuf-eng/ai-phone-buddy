@@ -32,14 +32,14 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            createUi(savedInstanceState)
+            createUi()
         } catch (e: Exception) {
             CrashLogger.log("SETTINGS", "onCreate crash", e)
             Toast.makeText(this, "Crash: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun createUi(savedInstanceState: Bundle?) {
+    private fun createUi() {
         setContentView(R.layout.activity_settings)
 
         apiKeyInput = findViewById(R.id.apiKeyInput)
