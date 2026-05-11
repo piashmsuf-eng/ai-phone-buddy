@@ -1,12 +1,14 @@
 package com.myra.assistant.ui.settings
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -131,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
         val numberInput = view.findViewById<EditText>(R.id.dialogNumberInput)
         dialog.setTitle("Add Prime Contact")
         dialog.setView(view)
-        dialog.setPositiveButton("Add") { _, _ ->
+        dialog.setPositiveButton("Add") { _: DialogInterface, _: Int ->
             val name = nameInput.text.toString().trim()
             val number = numberInput.text.toString().trim()
             if (name.isNotBlank() && number.isNotBlank()) {

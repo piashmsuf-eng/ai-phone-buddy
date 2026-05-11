@@ -17,6 +17,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.myra.assistant.model.AppCommand
 import com.myra.assistant.service.AccessibilityHelperService
 import kotlinx.coroutines.*

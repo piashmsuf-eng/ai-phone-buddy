@@ -77,11 +77,12 @@ class MainActivity : AppCompatActivity() {
         binding.micButton.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    longPressRunnable = mainHandler.postDelayed({
+                    longPressRunnable = Runnable {
                         isLongPressing = true
                         geminiLive?.interrupt()
                         audioEngine.clearPlayback()
-                    }, 600)
+                    }
+                    mainHandler.postDelayed(longPressRunnable!!, 600)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     longPressRunnable?.let { mainHandler.removeCallbacks(it) }
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIncomingCallIntent(intent)
     }

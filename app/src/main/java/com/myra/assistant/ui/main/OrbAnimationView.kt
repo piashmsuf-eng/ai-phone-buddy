@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.*
 import android.view.View
 import android.view.animation.LinearInterpolator
+import kotlin.math.cos
+import kotlin.math.sin
 
 enum class OrbState { IDLE, LISTENING, SPEAKING, THINKING }
 
@@ -39,7 +41,7 @@ class OrbAnimationView(context: Context) : View(context) {
     private fun updateColors() {
         when (state) {
             OrbState.IDLE -> { coreColor = 0xFFB71C1C.toInt(); accentColor = 0xFFFF1744.toInt() }
-            OrbState.LISTENING, OrbState.ACTIVE -> { coreColor = 0xFFFF1744.toInt(); accentColor = 0xFFD500F9.toInt() }
+            OrbState.LISTENING -> { coreColor = 0xFFFF1744.toInt(); accentColor = 0xFFD500F9.toInt() }
             OrbState.SPEAKING -> { coreColor = 0xFFE040FB.toInt(); accentColor = 0xFFFF1744.toInt() }
             OrbState.THINKING -> { coreColor = 0xFF40C4FF.toInt(); accentColor = 0xFF00B0FF.toInt() }
         }
