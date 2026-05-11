@@ -3,10 +3,15 @@ package com.myra.assistant.ui.main
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import android.view.View
 import kotlin.math.abs
 
-class WaveformView(context: Context) : View(context) {
+class WaveformView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
     private val barCount = 20
     private val barHeights = FloatArray(barCount) { 5f }
     private val targetHeights = FloatArray(barCount) { 5f }

@@ -3,6 +3,7 @@ package com.myra.assistant.ui.main
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kotlin.math.cos
@@ -10,7 +11,11 @@ import kotlin.math.sin
 
 enum class OrbState { IDLE, LISTENING, SPEAKING, THINKING }
 
-class OrbAnimationView(context: Context) : View(context) {
+class OrbAnimationView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
     var state = OrbState.IDLE
         set(value) { field = value; updateColors(); invalidate() }
     var amplitude = 0f
