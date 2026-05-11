@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#050505">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="40dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/batteryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF6D6D"
+            android:typeface="monospace"
+            android:textSize="12sp"
+            android:text="100%" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MYRA"
+                android:textColor="#FF1744"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI COMPANION"
+                android:textColor="#555555"
+                android:typeface="monospace"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF1744"
+                android:typeface="monospace"
+                android:textSize="12sp"
+                android:text="12:00" />
+
+            <ImageButton
+                android:id="@+id/settingsBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_settings"
+                android:background="@android:color/transparent"
+                android:layout_gravity="end" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.myra.assistant.ui.main.OrbAnimationView
+        android:id="@+id/orbView"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_gravity="center" />
+
+    <com.myra.assistant.ui.main.WaveformView
+        android:id="@+id/waveformView"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="180dp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tap karke bolo"
+        android:textColor="#555555"
+        android:textSize="14sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="240dp" />
+
+    <View
+        android:id="@+id/redOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FF1744"
+        android:alpha="0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="100dp"
+        android:paddingHorizontal="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingBottom="20dp">
+
+        <ImageButton
+            android:id="@+id/micButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_mic_on"
+            android:background="@drawable/bg_mic_button"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Long press to stop"
+            android:textColor="#555555"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+</FrameLayout>

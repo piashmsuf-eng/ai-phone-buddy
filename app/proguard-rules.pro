@@ -1,0 +1,4 @@
+-keepattributes *Annotation*
+-keep class okhttp3.** { *; }
+-keep class org.json.** { *; }
+-keep class kotlinx.coroutines.** { *; }
