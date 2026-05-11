@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.myra.assistant.CrashLogger
 import com.myra.assistant.ai.AudioEngine
 import com.myra.assistant.ai.CommandParser
 import com.myra.assistant.ai.GeminiLiveClient
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CrashLogger.init(this)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         try {
             binding = ActivityMainBinding.inflate(layoutInflater)
@@ -63,8 +65,9 @@ class MainActivity : AppCompatActivity() {
             handleIncomingCallIntent(intent)
         } catch (e: Exception) {
             Log.e("MYRA", "onCreate crash: ${e.javaClass.name}: ${e.message}", e)
-            e.printStackTrace()
-            Toast.makeText(this, "Crash: ${e.javaClass.simpleName}: ${e.message}", Toast.LENGTH_LONG).show()
+            CrashLogger.log("MAIN", "onCreate crash", e)
+            val path = CrashLogger.getLogPath() ?: "N/A"
+            Toast.makeText(this, "Crash: ${e.message}\nLog: $path", Toast.LENGTH_LONG).show()
         }
     }
 

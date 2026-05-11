@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.myra.assistant.CrashLogger
 import com.myra.assistant.service.AccessibilityHelperService
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,6 +31,15 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        try {
+            createUi(savedInstanceState)
+        } catch (e: Exception) {
+            CrashLogger.log("SETTINGS", "onCreate crash", e)
+            Toast.makeText(this, "Crash: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun createUi(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_settings)
 
         apiKeyInput = findViewById(R.id.apiKeyInput)
