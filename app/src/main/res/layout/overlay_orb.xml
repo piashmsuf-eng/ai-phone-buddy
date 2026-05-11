@@ -3,6 +3,6 @@
     android:layout_width="160dp"
     android:layout_height="160dp">
     <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_overlay_orb" />
-    <TextView android:text="MYRA" android:textColor="#FF1744" android:textSize="14sp" android:textStyle="bold" android:layout_gravity="bottom|center" android:layout_marginBottom="16dp" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MYRA" android:textColor="#FF1744" android:textSize="14sp" android:textStyle="bold" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="16dp" />
     <ImageButton android:id="@+id/overlayCloseBtn" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_close" android:background="@android:color/transparent" android:layout_gravity="end|top" android:layout_margin="8dp" />
 </FrameLayout>

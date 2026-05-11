@@ -39,11 +39,15 @@ class CallMonitorService : Service() {
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
         val notif = NotificationCompat.Builder(this, "myra_call")
-            .setContentTitle("MYRA Call Monitor")
-            .setContentText("Active")
-            .setSmallIcon(android.R.drawable.sym_def_app_icon)
+            .setContentTitle("MYRA")
+            .setContentText("Call monitor active")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
-        startForeground(2001, notif)
+        try { startForeground(2001, notif) } catch (e: Exception) {
+            stopSelf()
+            return
+        }
         telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
     }
