@@ -47,19 +47,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        audioEngine = AudioEngine(getSystemService(AUDIO_SERVICE) as AudioManager)
+        try {
+            binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+            audioEngine = AudioEngine(getSystemService(AUDIO_SERVICE) as AudioManager)
 
-        setupUI()
-        checkPermissions()
-        startSystemServices()
-        startStatusUpdates()
+            setupUI()
+            checkPermissions()
+            startSystemServices()
+            startStatusUpdates()
 
-        mainHandler.postDelayed({ initGeminiLive() }, 300)
+            mainHandler.postDelayed({ try { initGeminiLive() } catch (e: Exception) { Log.e("MYRA", "init failed", e) } }, 300)
 
-        handleIncomingCallIntent(intent)
+            handleIncomingCallIntent(intent)
+        } catch (e: Exception) {
+            Log.e("MYRA", "onCreate crash", e)
+            Toast.makeText(this, "Startup error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun setupUI() {
@@ -181,8 +186,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startSystemServices() {
-        startService(Intent(this, MyraOverlayService::class.java))
-        startService(Intent(this, CallMonitorService::class.java))
+        try { startService(Intent(this, MyraOverlayService::class.java)) } catch (_: Exception) {}
+        try { startService(Intent(this, CallMonitorService::class.java)) } catch (_: Exception) {}
     }
 
     private fun startStatusUpdates() {

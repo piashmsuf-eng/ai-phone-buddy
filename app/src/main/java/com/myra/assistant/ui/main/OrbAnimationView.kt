@@ -27,15 +27,29 @@ class OrbAnimationView(context: Context) : View(context) {
 
     private val rotateAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
         duration = 3000; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
-        addUpdateListener { rotationAngle = it.animatedValue as Float; invalidate() }; start()
+        addUpdateListener { rotationAngle = it.animatedValue as Float; invalidate() }
     }
     private val pulseAnimator = ValueAnimator.ofFloat(1f, 1.15f).apply {
         duration = 1500; repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE
-        addUpdateListener { pulseScale = it.animatedValue as Float; invalidate() }; start()
+        addUpdateListener { pulseScale = it.animatedValue as Float; invalidate() }
     }
     private val waveAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         duration = 1200; repeatCount = ValueAnimator.INFINITE; interpolator = LinearInterpolator()
-        addUpdateListener { waveOffset = it.animatedValue as Float; invalidate() }; start()
+        addUpdateListener { waveOffset = it.animatedValue as Float; invalidate() }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        rotateAnimator.start()
+        pulseAnimator.start()
+        waveAnimator.start()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        rotateAnimator.cancel()
+        pulseAnimator.cancel()
+        waveAnimator.cancel()
     }
 
     private fun updateColors() {

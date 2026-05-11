@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.view.View
+import kotlin.math.abs
 
 class WaveformView(context: Context) : View(context) {
     private val barCount = 20
